@@ -1,0 +1,13 @@
+[project]
+name = "diff_tabela_precos"
+version = "0.1.0"
+description = "Projeto para exportar tabela de precos de carnes para um arquivo xlsx"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "openpyxl>=3.1.5",
+    "pandas>=2.0.3",
+    "pyodbc>=5.2.0",
+    "python-dotenv>=1.0.1",
+    "xlrd>=2.0.2",
+]
