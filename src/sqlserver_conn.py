@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# sudo apt update
-# sudo apt install curl apt-transport-https
-# curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-# sudo curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list -o /etc/apt/sources.list.d/mssql-release.list
-# sudo apt update
-# sudo ACCEPT_EULA=Y apt install msodbcsql17
-# sudo apt install unixodbc-dev unixodbc
-
 
 import pyodbc
 from datetime import datetime

@@ -44,9 +44,20 @@ diff_tabela_precos/
 
 3. **Coloque o arquivo Excel de origem na pasta `xls/`.**
 
-4. **Execute o projeto a partir da raiz:**
+4. **Instale as bibliotecas de conexão ODBC com o SQLServer (se for Linux)**
+```sh
+sudo apt update
+sudo apt install curl apt-transport-https
+curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+sudo curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list -o /etc/apt/sources.list.d/mssql-release.list
+sudo apt update
+sudo ACCEPT_EULA=Y apt install msodbcsql17
+sudo apt install unixodbc-dev unixodbc
+```
+
+5. **Execute o projeto a partir da raiz:**
    ```sh
-   python -m src.main
+   uv run python src/main.py
    ```
 
 ## Observações
