@@ -1,14 +1,11 @@
-#!/usr/bin/env python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 
 import pandas as pd
 from os import path
 from datetime import datetime
-
-
-PASTA_XLS = './xls'
-XLS_DESTINO = 'preco_diferente.xlsx'
+from . import PASTA_XLS, XLS_DIFERENCA
 
 
 def encontrar_diferencas_precos(
@@ -48,6 +45,6 @@ def encontrar_diferencas_precos(
     # Seleciona apenas as colunas desejadas do DataFrame original. Copy cria uma cópia independente
     df_resultado = df_diferentes[col_desejadas].copy()
 
-    xlsx_salvo = path.join(PASTA_XLS, XLS_DESTINO)
+    xlsx_salvo = path.join(PASTA_XLS, XLS_DIFERENCA)
     df_resultado.to_excel(xlsx_salvo, index=False)
     print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco diferente gravado em: {xlsx_salvo}")

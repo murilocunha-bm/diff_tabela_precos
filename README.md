@@ -55,9 +55,20 @@ sudo ACCEPT_EULA=Y apt install msodbcsql17
 sudo apt install unixodbc-dev unixodbc
 ```
 
-5. **Execute o projeto a partir da raiz:**
+5. **Execute o projeto a partir da raiz (considerando sistemas baseados em Ubuntu):**
    ```sh
-   uv run python src/main.py
+   # sem o ambiente ativo (.venv/bin/activate)...
+   uv run main.py
+
+   # ou
+
+   # com o ambiente ativo, pode rodar...
+   python3 ./main.py
+
+   # ou
+
+   # com o ambiente ativo...
+   ./main.py
    ```
 
 ## Observações

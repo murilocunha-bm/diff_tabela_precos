@@ -1,27 +1,22 @@
-#!/usr/bin/env python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 
 import pandas as pd
-from os import getenv, path
+from os import path
 from datetime import datetime
-from sqlserver_conn import SQLServerConnection
-
-
-PASTA_XLS = './xls'
-XLS_DESTINO = 'preco_vigente.xlsx'
+#
+# biblioteca propria do sistema
+from src.sqlserver_conn import SQLServerConnection
+from . import PASTA_XLS, XLS_PRECO_VIGENTE
+from . import SERVER, DATABASE, USERNAME, PASSWORD
 
 
 def pegar_precos_vigentes_bd():
     """Função para pegar os preços vigentes do banco de dados."""
 
     # Conectar ao banco de dados sql server
-    server = getenv('SQLSERVER_HOST')
-    database = getenv('SQLSERVER_DATABASE')
-    username = getenv('SQLSERVER_USER')
-    password = getenv('SQLSERVER_PASSWORD')
-
-    bd = SQLServerConnection(server, database, username, password)
+    bd = SQLServerConnection(SERVER, DATABASE, USERNAME, PASSWORD)
     conn = bd.conectar_bd()
     
     if conn:
@@ -71,10 +66,13 @@ def pegar_precos_vigentes_bd():
             }
         )
         print(df.head())  # Mostra as primeiras linhas da tabela
+
+        xlsx_salvo = path.join(PASTA_XLS, XLS_PRECO_VIGENTE)
+        df.to_excel(xlsx_salvo, index=False)
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco vigente gravado em: {xlsx_salvo}")
+    else:
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} - ERRO ] Erro ao conectar ao banco de dados.")
+        df = pd.DataFrame()
+
     bd.fechar_conexao()
-
-    xlsx_salvo = path.join(PASTA_XLS, XLS_DESTINO)
-    df.to_excel(xlsx_salvo, index=False)
-    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco vigente gravado em: {xlsx_salvo}")
-
     return df

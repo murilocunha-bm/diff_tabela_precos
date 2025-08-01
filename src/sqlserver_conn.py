@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 
@@ -29,7 +29,7 @@ class SQLServerConnection():
             return self.conn
         
         except Exception as e:
-            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Erro ao conectar: {e}")
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} - ERRO ] Erro ao conectar: {e}")
             return None
 
 
