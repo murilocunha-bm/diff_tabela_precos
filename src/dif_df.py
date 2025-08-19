@@ -3,18 +3,19 @@
 
 
 import pandas as pd
-from os import path
 from datetime import datetime
-from . import PASTA_XLS, XLS_DIFERENCA
 
 
 def encontrar_diferencas_precos(
+        nome_xlsx_diferenca: str,
         df_antigo:pd.DataFrame,
         df_novo:pd.DataFrame,
         col_ligacao:str,
         col_diferenca:str
     ) -> pd.DataFrame:
     
+    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Procurando diferencas...")
+
     df_diferenca_precos = pd.merge(
         df_antigo, 
         df_novo, 
@@ -35,9 +36,9 @@ def encontrar_diferencas_precos(
 
     col_desejadas = [
         'Codigo',
-        'Produtos_novo',
         'Produtos_vigente',
         'R$_vigente',
+        'Produtos_novo',
         'R$_novo',
     ]
     print(df_diferentes[col_desejadas])
@@ -45,6 +46,5 @@ def encontrar_diferencas_precos(
     # Seleciona apenas as colunas desejadas do DataFrame original. Copy cria uma cópia independente
     df_resultado = df_diferentes[col_desejadas].copy()
 
-    xlsx_salvo = path.join(PASTA_XLS, XLS_DIFERENCA)
-    df_resultado.to_excel(xlsx_salvo, index=False)
-    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco diferente gravado em: {xlsx_salvo}")
+    df_resultado.to_excel(nome_xlsx_diferenca, index=False)
+    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco diferente gravado em: {nome_xlsx_diferenca}")

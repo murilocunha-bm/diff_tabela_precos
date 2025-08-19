@@ -3,16 +3,14 @@
 
 
 import pandas as pd
-from os import path
 from datetime import datetime
 #
 # biblioteca propria do sistema
 from src.sqlserver_conn import SQLServerConnection
-from . import PASTA_XLS, XLS_PRECO_VIGENTE
 from . import SERVER, DATABASE, USERNAME, PASSWORD
 
 
-def pegar_precos_vigentes_bd():
+def pegar_precos_vigentes_bd(sql_tabela_precos, nome_xlsx_destino):
     """Função para pegar os preços vigentes do banco de dados."""
 
     # Conectar ao banco de dados sql server
@@ -20,29 +18,10 @@ def pegar_precos_vigentes_bd():
     conn = bd.conectar_bd()
     
     if conn:
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Montando tabela precos vigentes...")
+    
         # Fazer SELECT
-        df = pd.read_sql(
-            """select 
-                    a.codemp,
-                    a.codtpr cod_tabela_preco,
-                    a.codpro cod_produto,
-                    cast(a.datger as date) dat_validade_inicial,
-                    b.despro str_desc_produto,
-                    a.prebas num_preco_base,
-                    a.tolmai num_perc_tolerancia_para_mais,
-                    a.vltmai num_valor_tolerancia_para_mais
-            from E081ITP a
-            join e075pro b on a.codpro = b.codpro and a.codemp = b.codemp
-            where 
-                1 = 1
-                and a.codemp = 1
-                and a.codtpr = 'ST01'
-                and a.prebas > 0
-                -- and cast(a.datini as date) = cast(getdate() as date)
-                and cast(a.datini as date) = '07/24/2025'
-            order by a.codpro""",
-            conn
-        )
+        df = pd.read_sql(sql_tabela_precos, conn)
         df.columns = [
             'CodigoEmpresa',
             'TabelaPreco',
@@ -65,11 +44,10 @@ def pegar_precos_vigentes_bd():
                 'ValorToleranciaParaMais': float,
             }
         )
-        print(df.head())  # Mostra as primeiras linhas da tabela
+        # print(df.head())  # Mostra as primeiras linhas da tabela
 
-        xlsx_salvo = path.join(PASTA_XLS, XLS_PRECO_VIGENTE)
-        df.to_excel(xlsx_salvo, index=False)
-        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco vigente gravado em: {xlsx_salvo}")
+        df.to_excel(nome_xlsx_destino, index=False)
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco vigente gravado em: {nome_xlsx_destino}")
     else:
         print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} - ERRO ] Erro ao conectar ao banco de dados.")
         df = pd.DataFrame()

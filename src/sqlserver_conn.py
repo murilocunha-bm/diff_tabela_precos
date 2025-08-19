@@ -16,7 +16,7 @@ class SQLServerConnection():
         self.password = password
         self.conn_str = (
             f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-            f"SERVER={server};DATABASE={database};UID={username};PWD={password}"
+            f"SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}"
         )
         self.conn = None
         
