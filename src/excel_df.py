@@ -4,6 +4,7 @@
 
 import pandas as pd
 from datetime import datetime, date
+from os import path
 
 
 def carregar_tabela(
@@ -59,7 +60,7 @@ def carregar_tabela(
         )
 
         return df
-
+    
     except Exception as e:
         print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} - ERRO ] Não foi possível carregar a tabela de preços. {e.args}")
         raise 
@@ -72,35 +73,41 @@ def montar_tabela_unica(lst_preco_novo:list, nome_xlsx_destino:str):
 
     # Carrega as tabelas
     for tab in lst_preco_novo:
-        xlsx_preco_novo = tab['nome_xlsx']
-        sheet_preco_novo = tab['nome_sheet']
-        nome_colunas = tab['nome_colunas'],
-        linhas_pular = tab['linhas_pular']
-        colunas_ler = tab['colunas_ler']
-        linhas_ler = tab['linhas_ler']
-        
-        df = carregar_tabela(
-            xlsx_preco_novo=xlsx_preco_novo,
-            xlsx_sheet=sheet_preco_novo,
-            nome_colunas=nome_colunas,
-            linhas_pular=linhas_pular,
-            colunas_ler=colunas_ler,
-            linhas_ler=linhas_ler
-        )
+        if path.exists(tab['nome_xlsx']):
+            xlsx_preco_novo = tab['nome_xlsx']
+            sheet_preco_novo = tab['nome_sheet']
+            nome_colunas = tab['nome_colunas'],
+            linhas_pular = tab['linhas_pular']
+            colunas_ler = tab['colunas_ler']
+            linhas_ler = tab['linhas_ler']
+            
+            df = carregar_tabela(
+                xlsx_preco_novo=xlsx_preco_novo,
+                xlsx_sheet=sheet_preco_novo,
+                nome_colunas=nome_colunas,
+                linhas_pular=linhas_pular,
+                colunas_ler=colunas_ler,
+                linhas_ler=linhas_ler
+            )
+
+        else:
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Arquivo de precos novos nao encontrado: {tab['nome_xlsx']}")
+            df = pd.DataFrame()
 
         if 'df_todos' in locals():
             df_todos = pd.concat([df_todos, df], ignore_index=True)
         else:
             df_todos = df
-
+    
     print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Concluído tabela unica de precos novos.")
 
-    # Salva o DataFrame em um arquivo Excel para comferencia manual
-    df_todos.to_excel(nome_xlsx_destino, index=False)
-    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco novo gravado em: {nome_xlsx_destino}")
-    
-    return df_todos
+    if not df_todos.empty:
+        # Salva o DataFrame em um arquivo Excel para comferencia manual
+        df_todos.to_excel(nome_xlsx_destino, index=False)
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco novo gravado em: {nome_xlsx_destino}")
 
+    return df_todos
+    
 
 def criar_csv_custos(mapa_custos: list, csv_filename: str):
     for tab in mapa_custos:
