@@ -149,7 +149,7 @@ MAPA_TABELA_PRECO_NOVO_SP2 = [
         'nome_xlsx': XLS_TABELA_PRECO_SP,
         'nome_sheet': 'Tabela Base',
         'nome_colunas': ['Codigo', 'Produtos', 'PesoCaixa', 'R$', 'del01', 'del02', 'Qtde'],  # colocar as colunas a apagar como: del01, del02, del03...
-        'linhas_pular': 11,                                         # inicia em ZERO
+        'linhas_pular': 10,                                         # inicia em ZERO
         'colunas_ler': 'B:H',
         'linhas_ler': 300
     },
@@ -192,7 +192,7 @@ MAPA_TABELA_PRECO_NOVO_SP3 = [
         'nome_xlsx': XLS_TABELA_PRECO_SP,
         'nome_sheet': 'Tabela Base',
         'nome_colunas': ['Codigo', 'Produtos', 'PesoCaixa', 'del01', 'R$', 'del01', 'Qtde'],    # colocar as colunas a apagar como: del01, del02, del03...
-        'linhas_pular': 11,                                                                     # inicia em ZERO
+        'linhas_pular': 10,                                                                     # inicia em ZERO
         'colunas_ler': 'B:H',
         'linhas_ler': 300
     },
@@ -235,9 +235,9 @@ MAPA_TABELA_CUSTOS_SP = [
         'nome_xlsx': XLS_TABELA_CUSTOS,
         'nome_sheet': 'Tabela Base',
         'nome_colunas': ['Codigo', 'del01', 'del02', 'del03', 'del04', 'del05', 'del06', 'del07', 'del08', 'Custo'],
-        'linhas_pular': 11,
+        'linhas_pular': 10,         # inicia em ZERO - cuidado: num_linha_excel - 1
         'colunas_ler': 'B:K',
-        'linhas_ler': 300
+        'linhas_ler': 300           # comeca a ler na linha abaixo ao de: "linhas_pular"
     },
 
 ]

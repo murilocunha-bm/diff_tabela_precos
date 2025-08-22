@@ -31,6 +31,8 @@ def carregar_tabela(
 
         df.columns = nome_colunas[0]
 
+        df = df.sort_values('Codigo')
+        
         # df = df.drop(['del01', 'del02', 'del03'], axis=1)         # apagar coluna pelo nome
         df = df[['Codigo', 'Produtos', 'PesoCaixa', 'R$', 'Qtde']]  # extrair apenas as colunas q interessa
 
@@ -128,6 +130,8 @@ def criar_csv_custos(mapa_custos: list, csv_filename: str):
             )
             
             df.columns = nome_colunas[0]
+
+            df = df.sort_values('Codigo')
 
             df = df[ ['Codigo', 'Custo'] ]
             df.dropna(how='all', axis=0, inplace=True)  # apaga linhas em branco
