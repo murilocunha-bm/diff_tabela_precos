@@ -3,8 +3,8 @@
 
 
 from datetime import datetime
-from pyodbc import connect
-from sqlalchemy import create_engine
+# from pyodbc import connect
+from sqlalchemy import create_engine    # precisa da biblioteca pyodbc (por causa da string de conexao)
 
 
 class SQLServerConnection():

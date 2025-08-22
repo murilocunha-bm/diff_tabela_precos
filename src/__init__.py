@@ -3,8 +3,8 @@ from os import getenv, path
 
 PASTA_XLS = './xls'
 XLS_TABELA_PRECO_ST = path.join(PASTA_XLS, 'Tabela de Preco Representante Geral.xls') 
-XLS_TABELA_PRECO_SP = path.join(PASTA_XLS, 'Tabela Barra Mansa 21-08-2025.xlsx')
-XLS_TABELA_CUSTOS = path.join(PASTA_XLS, 'Tabela Barra Mansa 21-08-2025.xlsx')
+XLS_TABELA_PRECO_SP = path.join(PASTA_XLS, 'Tabela Barra Mansa 22-08-2025.xlsx')
+XLS_TABELA_CUSTOS = path.join(PASTA_XLS, 'Tabela Barra Mansa 22-08-2025.xlsx')
 CSV_CUSTOS = path.join(PASTA_XLS, 'custos.csv')
 # XLS_TABELA_PRECO_SP = path.join(PASTA_XLS, 'Tabela Barra Mansa 15-08-2025.xlsx')
 XLS_PRECO_NOVO_ST = path.join(PASTA_XLS, 'preco_novo_st.xlsx')
