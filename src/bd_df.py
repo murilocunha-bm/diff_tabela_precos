@@ -15,7 +15,10 @@ def pegar_precos_vigentes_bd(sql_tabela_precos, nome_xlsx_destino):
 
     # Conectar ao banco de dados sql server
     bd = SQLServerConnection(SERVER, DATABASE, USERNAME, PASSWORD)
-    conn = bd.conectar_bd()
+    
+    # Escolher entre conexao PyODBC ou SQLAlchemy - Pandas é melhor com SQLAlchemy
+    # conn = bd.conectar_odbc()
+    conn = bd.conectar_sqlalchemy()
     
     if conn:
         print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Montando tabela precos vigentes...")
@@ -45,6 +48,12 @@ def pegar_precos_vigentes_bd(sql_tabela_precos, nome_xlsx_destino):
             }
         )
         # print(df.head())  # Mostra as primeiras linhas da tabela
+        
+        if not df.empty:
+            validade_inicial = df.iloc[0, 3]    # primeira linha e coluna ValidadeInicial
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Validade inicial da tabela {validade_inicial}")
+        else:
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Nenhum registro de preços anterior encontrado")
 
         df.to_excel(nome_xlsx_destino, index=False)
         print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco vigente gravado em: {nome_xlsx_destino}")

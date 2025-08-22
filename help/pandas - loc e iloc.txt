@@ -1,0 +1,46 @@
+import pandas as pd
+
+df = pd.DataFrame({
+    "nome": ["Ana", "Bruno", "Carla"],
+    "idade": [23, 34, 29],
+    "cidade": ["SP", "RJ", "BH"]
+}, index=["a", "b", "c"])
+
+print(df)
+
+-----------------------------
+    nome    idade   cidade
+-----------------------------
+a     Ana       23      SP
+b   Bruno       34      RJ
+c   Carla       29      BH
+-----------------------------
+
+
+✅ Exemplos com loc:
+---------------------------------------------------------------------
+df.loc["a"]                # linha com índice 'a'
+df.loc[["a","c"]]          # linhas 'a' e 'c'
+df.loc["a":"c"]            # fatiamento pelo label (inclui o final!)
+df.loc[:, "nome"]          # todas as linhas, apenas a coluna 'nome'
+df.loc["a", "idade"]       # valor da célula índice 'a', coluna 'idade'
+df.loc[:, ["nome","cidade"]]  # todas as linhas, colunas 'nome' e 'cidade'
+
+🔹 iloc (integer-location based)
+Usa índices numéricos, começando em 0.
+
+
+✅ Exemplos com iloc:
+---------------------------------------------------------------------
+df.iloc[0]                 # primeira linha
+df.iloc[0:2]               # linhas 0 e 1 (fatiamento estilo Python)
+df.iloc[:, 1]              # todas as linhas, segunda coluna ('idade')
+df.iloc[0, 2]              # célula na linha 0, coluna 2 ('SP')
+df.iloc[[0,2], [0,2]]      # linhas 0 e 2, colunas 0 e 2
+
+
+📌 Diferença importante:
+---------------------------------------------------------------------
+loc     → inclui o fim no slice: df.loc["a":"c"] pega de a até c.
+iloc    → segue a regra do Python: df.iloc[0:2] pega até antes de 2.
+

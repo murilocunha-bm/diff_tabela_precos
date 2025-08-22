@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv() 
 #
 from datetime import datetime
+from os import remove, path
 #
 from src.excel_df import montar_tabela_unica, criar_csv_custos
 from src.bd_df import pegar_precos_vigentes_bd
@@ -20,6 +21,21 @@ from src import XLS_DIFERENCA_ST, XLS_DIFERENCA_SP2, XLS_DIFERENCA_SP3
 from src import CSV_CUSTOS
 
 
+def apagar_arquivos_criados_antes():
+    arquivos_criados = [
+        XLS_PRECO_NOVO_ST, XLS_PRECO_NOVO_SP2, XLS_PRECO_NOVO_SP3,
+        XLS_PRECO_VIGENTE_ST, XLS_PRECO_VIGENTE_SP2, XLS_PRECO_VIGENTE_SP3,
+        XLS_DIFERENCA_ST, XLS_DIFERENCA_SP2, XLS_DIFERENCA_SP3,
+        CSV_CUSTOS,
+    ]
+    for arquivo in arquivos_criados:
+        if path.isfile(arquivo):
+            remove(arquivo)
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Arquivo {arquivo} excluído com sucesso.")
+        else:
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Arquivo {arquivo} não encontrado.")
+
+
 def encontrar_diferencas_tabelas_precos():
     etapas = (
         (MAPA_TABELA_PRECO_NOVO_ST, XLS_PRECO_NOVO_ST, SQL_TB_ST01, XLS_PRECO_VIGENTE_ST, XLS_DIFERENCA_ST,),
@@ -29,7 +45,7 @@ def encontrar_diferencas_tabelas_precos():
 
     for etapa in etapas:
 
-        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Iniciando o processamento de tabela de precos: {etapa[0][0]['nome_xlsx']}...")
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Tabela de precos: {etapa[0][0]['nome_xlsx']}...")
 
         df_precos_novos = montar_tabela_unica(
             lst_preco_novo=etapa[0],
@@ -55,6 +71,11 @@ def encontrar_diferencas_tabelas_precos():
 
 
 if __name__ == "__main__":
+    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Iniciando sistema")
+    
+    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Apagando arquivos de resultado criados antes...")
+    apagar_arquivos_criados_antes()
+
     print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Iniciando o processamento da tabela de preços...")
     encontrar_diferencas_tabelas_precos()
 
