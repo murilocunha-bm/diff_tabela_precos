@@ -64,7 +64,7 @@ def carregar_tabela(
         return df
     
     except Exception as e:
-        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} - ERRO ] Não foi possível carregar a tabela de preços. {e.args}")
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] ❌ Não foi possível carregar a tabela de preços. {e.args}")
         raise 
 
 
@@ -93,7 +93,7 @@ def montar_tabela_unica(lst_preco_novo:list, nome_xlsx_destino:str):
             )
 
         else:
-            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Arquivo de precos novos nao encontrado: {tab['nome_xlsx']}")
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] ❌ Arquivo de precos novos nao encontrado: {tab['nome_xlsx']}")
             df = pd.DataFrame()
 
         if 'df_todos' in locals():
@@ -101,60 +101,69 @@ def montar_tabela_unica(lst_preco_novo:list, nome_xlsx_destino:str):
         else:
             df_todos = df
     
-    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Concluído tabela unica de precos novos.")
+    print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] 📃 Concluído tabela unica de precos novos.")
 
     if not df_todos.empty:
         # Salva o DataFrame em um arquivo Excel para comferencia manual
         df_todos.to_excel(nome_xlsx_destino, index=False)
-        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco novo gravado em: {nome_xlsx_destino}")
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] 📂 Preco novo gravado em: {nome_xlsx_destino}")
 
     return df_todos
     
 
 def criar_csv_custos(mapa_custos: list, csv_filename: str):
     for tab in mapa_custos:
-        xlsx_custo = tab['nome_xlsx']
-        sheet_custo = tab['nome_sheet']
-        nome_colunas = tab['nome_colunas'],
-        linhas_pular = tab['linhas_pular']
-        colunas_ler = tab['colunas_ler']
-        linhas_ler = tab['linhas_ler']
+        if path.exists(tab['nome_xlsx']):
+            xlsx_custo = tab['nome_xlsx']
+            sheet_custo = tab['nome_sheet']
+            nome_colunas = tab['nome_colunas'],
+            linhas_pular = tab['linhas_pular']
+            colunas_ler = tab['colunas_ler']
+            linhas_ler = tab['linhas_ler']
 
-        try:
-            df = pd.read_excel(
-                xlsx_custo,
-                sheet_name = sheet_custo,           # Nome da Sheet a ler os dados
-                skiprows = linhas_pular,            # Pula as linhas especificadas
-                usecols = colunas_ler,              # Ou use nomes das colunas: ['Coluna1', 'Coluna2']
-                nrows = linhas_ler,                 # Lê apenas as próximas linhas especificadas
-            )
+            try:
+                df = pd.read_excel(
+                    xlsx_custo,
+                    sheet_name = sheet_custo,           # Nome da Sheet a ler os dados
+                    skiprows = linhas_pular,            # Pula as linhas especificadas
+                    usecols = colunas_ler,              # Ou use nomes das colunas: ['Coluna1', 'Coluna2']
+                    nrows = linhas_ler,                 # Lê apenas as próximas linhas especificadas
+                )
+                
+                df.columns = nome_colunas[0]
+
+                df = df.sort_values('Codigo')
+
+                df = df[ ['Codigo', 'Custo'] ]
+                df.dropna(how='all', axis=0, inplace=True)  # apaga linhas em branco
+                df = df[ df['Custo'] > 0 ]
             
-            df.columns = nome_colunas[0]
+                df['Custo'] = df['Custo'].round(2)
+                
+                df.insert(0, "data", date.today().strftime('%d/%m/%Y'))
 
-            df = df.sort_values('Codigo')
+                df = df.astype(
+                    {
+                        'Codigo': int,
+                        'Custo': float,
+                    }
+                )
+                
+                if 'df_total' in locals():
+                    df_total = pd.concat([df_total, df], ignore_index=True)
+                else:
+                    df_total = df
 
-            df = df[ ['Codigo', 'Custo'] ]
-            df.dropna(how='all', axis=0, inplace=True)  # apaga linhas em branco
-            df = df[ df['Custo'] > 0 ]
+
+            except Exception as e:
+                print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] ❌ Erro ao criar CSV de custos. {e.args}")
+                raise
         
-            df['Custo'] = df['Custo'].round(2)
-            
-            df.insert(0, "data", date.today().strftime('%d/%m/%Y'))
+        else:
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] ❌ Arquivo de composição do custo nao encontrado: {tab['nome_xlsx']}")
 
-            df = df.astype(
-                {
-                    'Codigo': int,
-                    'Custo': float,
-                }
-            )
-            
-            if 'df_total' in locals():
-                df_total = pd.concat([df_total, df], ignore_index=True)
-            else:
-                df_total = df
-
-        except Exception as e:
-            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Erro ao criar CSV de custos. {e.args}")
-            raise
-
-    df_total.to_csv(csv_filename, sep=',', index=False)
+    if ('df_total' in locals()) and not df_total.empty:
+        df_total.to_csv(csv_filename, sep=',', index=False)
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] 💲 CSV de custos gravados com sucesso: {csv_filename}")
+    else:
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] ❌ CSV de custos vazio")

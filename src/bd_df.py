@@ -51,14 +51,14 @@ def pegar_precos_vigentes_bd(sql_tabela_precos, nome_xlsx_destino):
         
         if not df.empty:
             validade_inicial = df.iloc[0, 3]    # primeira linha e coluna ValidadeInicial
-            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Validade inicial da tabela {validade_inicial}")
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] 👉🏻 Validade inicial da tabela {validade_inicial}")
+            df.to_excel(nome_xlsx_destino, index=False)
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] 📂 Preco vigente gravado em: {nome_xlsx_destino}")
         else:
-            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Nenhum registro de preços anterior encontrado")
+            print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] ❌ Nenhum registro de preços anterior encontrado. Verifique a data inicial da tabela")
 
-        df.to_excel(nome_xlsx_destino, index=False)
-        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] Preco vigente gravado em: {nome_xlsx_destino}")
     else:
-        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} - ERRO ] Erro ao conectar ao banco de dados.")
+        print(f"[ {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ] 💀 - Erro ao conectar ao banco de dados.")
         df = pd.DataFrame()
 
     bd.fechar_conexao()
